@@ -26,6 +26,14 @@ on:
         required: false
         type: boolean
         default: true
+        
+    secrets:
+      USERNAME:
+        description: Username for testing
+        required: false
+      PASSWORD:
+        description: Password for testing
+        required: false
 
 jobs:
   test:
@@ -42,6 +50,9 @@ jobs:
       run: npx playwright install --with-deps
     - name: Run Playwright tests
       run: ${{ inputs.npm-test-command }}
+      env:
+        USERNAME: ${{secrets.USERNAME}}
+        PASSWORD: ${{secrets.PASSWORD}}
     - uses: actions/upload-artifact@v3
       if: ${{ inputs.upload-artifact }}
       with:
