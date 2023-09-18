@@ -9,9 +9,9 @@ on:
         type: string
         default: '18.x'
       
-      npm-build-command:
+      npm-install-command:
         description: 'The npm command to run for building the application.'
-        required: false
+        required: true
         type: string
         default: 'ci'  # Default to "npm ci"
 
