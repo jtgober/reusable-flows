@@ -15,11 +15,11 @@ on:
         type: string
         default: 'ci'  # Default to "npm ci"
 
-      npm-test-command:
-        description: 'The npm command to run tests.'
+      run-playwright:
+        description: 'Should Playwright browsers be installed and tests be run?'
         required: false
-        type: string
-        default: 'npx playwright test'  # Default to Playwright test
+        type: boolean
+        default: true
 
       upload-artifact:
         description: 'Should the artifact be uploaded?'
@@ -46,10 +46,11 @@ jobs:
         node-version: ${{ inputs.node-version }}
     - name: Install dependencies
       run: npm ${{ inputs.npm-install-command }}
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: ${{ inputs.npm-test-command }}
+    - name: Install Playwright Browsers and Run Tests
+      if: ${{ inputs.run-playwright }}
+      run: |
+        npx playwright install --with-deps
+        npx playwright test
       env:
         USERNAME: ${{secrets.USERNAME}}
         PASSWORD: ${{secrets.PASSWORD}}
