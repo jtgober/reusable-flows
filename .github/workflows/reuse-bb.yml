@@ -37,7 +37,7 @@ jobs:
       with:
         node-version: ${{ inputs.node-version }}
     - name: Install dependencies
-      run: npm ${{ inputs.npm-build-command }}
+      run: npm ${{ inputs.npm-install-command }}
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
