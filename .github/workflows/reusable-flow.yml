@@ -46,11 +46,12 @@ jobs:
         node-version: ${{ inputs.node-version }}
     - name: Install dependencies
       run: npm ${{ inputs.npm-install-command }}
-    - name: Install Playwright Browsers and Run Tests
+    - name: Install Playwright Browsers
       if: ${{ inputs.run-playwright }}
-      run: |
-        npx playwright install --with-deps
-        npx playwright test
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      if: ${{ inputs.run-playwright }}
+      run: npx playwright test
       env:
         USERNAME: ${{secrets.USERNAME}}
         PASSWORD: ${{secrets.PASSWORD}}
