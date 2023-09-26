@@ -4,29 +4,29 @@ on:
   workflow_call:
     inputs:
       node-version:
-        description: 'Version of Node.js to use.'
+        description: "Version of Node.js to use."
         required: false
         type: string
-        default: '18.x'
-      
+        default: "18.x"
+
       npm-install-command:
-        description: 'The npm command to run for building the application.'
+        description: "The npm command to run for building the application."
         required: true
         type: string
-        default: 'ci'  # Default to "npm ci"
+        default: "ci" # Default to "npm ci"
 
       run-playwright:
-        description: 'Should Playwright browsers be installed and tests be run?'
+        description: "Should Playwright browsers be installed and tests be run?"
         required: false
         type: boolean
         default: true
 
       upload-artifact:
-        description: 'Should the artifact be uploaded?'
+        description: "Should the artifact be uploaded?"
         required: false
         type: boolean
         default: true
-        
+
     secrets:
       USERNAME:
         description: Username for testing
@@ -39,26 +39,33 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: ${{ inputs.node-version }}
-    - name: Install dependencies
-      run: npm ${{ inputs.npm-install-command }}
-    - name: Install Playwright Browsers
-      if: ${{ inputs.run-playwright }}
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      if: ${{ inputs.run-playwright }}
-      run: npx playwright test
-      env:
-        USERNAME: ${{secrets.USERNAME}}
-        PASSWORD: ${{secrets.PASSWORD}}
-    - uses: actions/upload-artifact@v3
-      if: ${{ inputs.upload-artifact }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
-        
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Install dependencies
+        run: npm ${{ inputs.npm-install-command }}
+
+      - name: Install Playwright Browsers
+        if: ${{ inputs.run-playwright }}
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        if: ${{ inputs.run-playwright }}
+        run: npx playwright test
+        env:
+          USERNAME: ${{secrets.USERNAME}}
+          PASSWORD: ${{secrets.PASSWORD}}
+
+      - name: Upload Artifact
+        if: ${{ inputs.upload-artifact == 'true' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report
+          path: playwright-report/
